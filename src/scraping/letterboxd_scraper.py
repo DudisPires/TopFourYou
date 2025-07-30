@@ -1,5 +1,3 @@
-import pandas as pd
-from collections import Counter
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -18,8 +16,9 @@ def get_favorite_movies(nickname):
     driver.get(url)
 
     try:
+        # Espera o container dos filmes favoritos aparecer
         WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.ID, "favourites"))
+            EC.presence_of_element_located((By.CLASS_NAME, "poster-list"))
         )
         html = driver.page_source
     except Exception as e:
@@ -30,16 +29,16 @@ def get_favorite_movies(nickname):
     driver.quit()
 
     soup = BeautifulSoup(html, "html.parser")
-    favorites_list = soup.find("ul", class_="poster-list -p150 -horizontal")
+    favorites_list = soup.find("ul", class_="poster-list")
     if not favorites_list:
         print("Lista de favoritos não encontrada.")
         return []
 
     favorite_titles = []
-    movie_items = favorites_list.find_all("li", class_="poster-container favourite-film-poster-container")
+    movie_items = favorites_list.find_all("li", class_="poster-container")
 
     for item in movie_items[:4]:
-        poster_div = item.find("div", class_="react-component poster film-poster")
+        poster_div = item.find("div", class_="film-poster")
         if poster_div and poster_div.has_attr("data-film-name"):
             title = poster_div["data-film-name"]
             favorite_titles.append(title)
@@ -51,8 +50,6 @@ def get_favorite_movies(nickname):
 
     return favorite_titles
 
-
 if __name__ == "__main__":
-    filmes=[]
-    filmes= get_favorite_movies('dudis1990')
+    filmes = get_favorite_movies('trevorrussi')
     print(filmes)
