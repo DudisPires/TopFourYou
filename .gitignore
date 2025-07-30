@@ -138,6 +138,8 @@ celerybeat.pid
 .env
 .envrc
 .venv
+.venv-letterboxd
+venv-letterboxd/
 env/
 venv/
 ENV/
