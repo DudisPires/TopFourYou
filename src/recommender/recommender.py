@@ -1,82 +1,188 @@
 import numpy as np
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
+# O FAISS é uma biblioteca da Meta para busca de similaridade eficiente.
+# Para instalar, use: pip install faiss-cpu
+import faiss
 
-def recommend_movies_with_diversity(fav_matches, imdb_df, embeddings, top_n=10, candidate_pool_size=50, diversity_threshold=0.85):
+def recommend_movies_advanced(
+    fav_matches,
+    imdb_df,
+    embeddings,
+    ratings=None,
+    top_n=10,
+    candidate_pool_size=100,
+    lambda_=0.7
+):
     """
-    Gera recomendações de filmes com um algoritmo de diversidade para evitar
-    resultados muito repetitivos.
+    Gera recomendações de filmes com diversidade usando uma implementação clássica de
+    Maximal Marginal Relevance (MMR) e preparada para escalabilidade com FAISS.
 
-    Args:
-        fav_matches (dict): Dicionário com os filmes favoritos mapeados para o dataset.
-        imdb_df (pd.DataFrame): O DataFrame completo com os dados dos filmes.
-        embeddings (np.array): O array de embeddings para todos os filmes.
-        top_n (int): O número final de recomendações a serem retornadas.
-        candidate_pool_size (int): O tamanho do grupo inicial de candidatos a partir do qual
-                                   as recomendações serão selecionadas. Um número maior
-                                   aumenta a chance de diversidade.
-        diversity_threshold (float): Limiar de similaridade (entre 0 e 1) para considerar
-                                     dois filmes "parecidos demais". Um valor mais alto
-                                     resultará em maior diversidade. 0.85 é um bom começo.
-
-    Returns:
-        pd.DataFrame: Um DataFrame com os filmes recomendados.
+    Parâmetros:
+    - fav_matches (dict): Dicionário com os filmes favoritos do usuário.
+    - imdb_df (pd.DataFrame): DataFrame com os dados dos filmes.
+    - embeddings (np.ndarray): Matriz de embeddings de todos os filmes.
+    - ratings (dict, opcional): Dicionário de {title: rating} para ponderar o perfil do usuário.
+    - top_n (int): O número de recomendações a serem retornadas.
+    - candidate_pool_size (int): O tamanho do pool inicial de candidatos a serem considerados.
+    - lambda_ (float): Parâmetro para o MMR. Controla o trade-off entre relevância e diversidade.
+                       lambda_ = 1 -> Apenas relevância.
+                       lambda_ = 0 -> Apenas diversidade.
     """
-    # 1. Calcular o vetor de gosto médio do usuário a partir dos seus favoritos
+    # --- 1. Obter Índices e Criar Perfil de Usuário (Simples ou Ponderado) ---
     try:
         indices = [imdb_df[imdb_df['title'] == match].index[0] for match in fav_matches.values()]
     except IndexError:
-        print("Erro: Não foi possível encontrar os índices para um ou mais filmes favoritos no DataFrame.")
-        # Retorna um DataFrame vazio se houver erro
+        print("Erro: Não foi possível encontrar os índices para um ou mais filmes favoritos.")
         return pd.DataFrame()
 
     fav_vecs = embeddings[indices]
-    mean_vector = np.mean(fav_vecs, axis=0).reshape(1, -1)
 
-    # 2. Calcular a similaridade do gosto do usuário com TODOS os filmes
-    similarities = cosine_similarity(mean_vector, embeddings)[0]
+    if ratings:
+        # Perfil Ponderado: filmes com maior nota têm mais peso.
+        weights = np.array([ratings.get(title, 1.0) for title in fav_matches.values()]).reshape(-1, 1)
+        mean_vector = np.sum(fav_vecs * weights, axis=0) / np.sum(weights)
+    else:
+        # Perfil Simples: média dos vetores.
+        mean_vector = np.mean(fav_vecs, axis=0)
 
-    # 3. Criar um pool inicial de candidatos
-    # Adicionamos o tamanho dos favoritos para garantir que teremos candidatos suficientes
-    # mesmo depois de filtrar os próprios favoritos.
-    total_candidates = candidate_pool_size + len(indices)
+    user_profile_vec = mean_vector.reshape(1, -1)
+
+    # --- 2. Gerar Pool de Candidatos (Otimizado com FAISS) ---
+    # Para datasets muito grandes, a busca por similaridade em todo o catálogo é lenta.
+    # O FAISS cria um índice que torna essa busca ordens de magnitude mais rápida.
+
+    # Normalizar embeddings para busca com produto interno (equivalente à similaridade de cosseno)
+    faiss.normalize_L2(embeddings)
     
-    # Pega os N candidatos com maior similaridade, ignorando os filmes que o usuário já favoritou
-    top_indices_pool = [i for i in similarities.argsort()[::-1] if i not in indices][:total_candidates]
+    d = embeddings.shape[1]  # Dimensão dos vetores
+    index = faiss.IndexFlatIP(d) # IndexFlatIP é para produto interno (Inner Product)
+    index.add(embeddings)
 
-    # 4. Algoritmo de Diversidade (Maximum Marginal Relevance - MMR simplificado)
-    final_recommendations_indices = []
-    
-    # Conjunto para rastrear índices que já foram escolhidos ou descartados
-    indices_to_skip = set()
+    # Busca os `candidate_pool_size` vizinhos mais próximos do perfil do usuário
+    # Adicionamos len(indices) para garantir que teremos candidatos suficientes após remover os favoritos.
+    k = candidate_pool_size + len(indices)
+    distances, candidate_indices = index.search(user_profile_vec, k)
 
-    while len(final_recommendations_indices) < top_n and top_indices_pool:
-        # Encontra o próximo melhor candidato que ainda não foi pulado
-        best_candidate_idx = -1
-        for idx in top_indices_pool:
-            if idx not in indices_to_skip:
-                best_candidate_idx = idx
-                break
+    # Filtra os candidatos, removendo os filmes que o usuário já favoritou
+    candidate_indices = [idx for idx in candidate_indices[0] if idx not in indices]
+    candidate_indices = candidate_indices[:candidate_pool_size]
+
+    # --- 3. Algoritmo Maximal Marginal Relevance (MMR) ---
+    # Seleciona iterativamente os itens que maximizam a relevância e a diversidade.
+
+    # Calcula a relevância (similaridade com o perfil do usuário) para cada candidato
+    candidate_embeddings = embeddings[candidate_indices]
+    relevance_scores = cosine_similarity(user_profile_vec, candidate_embeddings)[0]
+
+    # Dicionário para fácil acesso: {indice_filme: score_relevancia}
+    candidate_relevance = {idx: score for idx, score in zip(candidate_indices, relevance_scores)}
+
+    # Inicia a lista de recomendações com o item mais relevante
+    recommendations_indices = [candidate_indices[np.argmax(relevance_scores)]]
+    candidate_indices.pop(np.argmax(relevance_scores))
+
+    while len(recommendations_indices) < top_n and candidate_indices:
+        mmr_scores = []
         
-        # Se não houver mais candidatos, para o loop
-        if best_candidate_idx == -1:
-            break
+        # Vetores dos filmes já recomendados
+        recommended_vecs = embeddings[recommendations_indices]
+
+        for candidate_idx in candidate_indices:
+            candidate_vec = embeddings[candidate_idx].reshape(1, -1)
             
-        # Adiciona o melhor candidato à lista final
-        final_recommendations_indices.append(best_candidate_idx)
-        indices_to_skip.add(best_candidate_idx)
-        
-        # Agora, penaliza filmes que são muito similares ao que acabamos de adicionar
-        newly_added_vec = embeddings[best_candidate_idx].reshape(1, -1)
-        
-        # Calcula a similaridade do novo filme com todos os outros do pool de candidatos
-        candidate_embeddings = embeddings[top_indices_pool]
-        similarity_to_new_movie = cosine_similarity(newly_added_vec, candidate_embeddings)[0]
+            # Relevância do candidato (já calculada)
+            relevance = candidate_relevance[candidate_idx]
+            
+            # Similaridade com os itens já selecionados
+            similarity_with_selected = cosine_similarity(candidate_vec, recommended_vecs)
+            max_similarity = np.max(similarity_with_selected)
+            
+            # Cálculo do MMR Score
+            mmr_score = lambda_ * relevance - (1 - lambda_) * max_similarity
+            mmr_scores.append((mmr_score, candidate_idx))
 
-        # Descarta (adiciona à lista de pulos) todos os candidatos "parecidos demais"
-        for i, candidate_idx in enumerate(top_indices_pool):
-            if similarity_to_new_movie[i] > diversity_threshold:
-                indices_to_skip.add(candidate_idx)
+        if not mmr_scores:
+            break
 
-    # 5. Retornar o DataFrame final com as recomendações
-    return imdb_df.iloc[final_recommendations_indices][['title', 'year', 'director', 'rating_imdb']]
+        # Seleciona o candidato com o maior MMR score
+        best_candidate_idx = max(mmr_scores, key=lambda x: x[0])[1]
+        
+        recommendations_indices.append(best_candidate_idx)
+        candidate_indices.remove(best_candidate_idx)
+
+    # --- 4. Retornar Filmes Recomendados ---
+    return imdb_df.iloc[recommendations_indices][['title', 'genre', 'release_date', 'language', 'rating_imdb']]\
+             .sort_values(by='rating_imdb', ascending=False)\
+             .reset_index(drop=True)
+
+# --- Exemplo de Uso ---
+if __name__ == '__main__':
+    # Criando dados de exemplo para demonstração
+    num_movies = 1000
+    embedding_dim = 32
+    
+    # Gerando embeddings aleatórios
+    np.random.seed(42)
+    sample_embeddings = np.random.rand(num_movies, embedding_dim).astype('float32')
+
+    # Criando um DataFrame de exemplo
+    titles = [f'Filme {i}' for i in range(num_movies)]
+    genres = [np.random.choice(['Ação', 'Comédia', 'Drama', 'Ficção Científica']) for _ in range(num_movies)]
+    dates = [f'20{np.random.randint(10, 24)}-01-01' for _ in range(num_movies)]
+    languages = ['Inglês'] * num_movies
+    ratings_imdb = np.round(np.random.uniform(5.0, 9.5, num_movies), 1)
+    
+    sample_imdb_df = pd.DataFrame({
+        'title': titles,
+        'genre': genres,
+        'release_date': dates,
+        'language': languages,
+        'rating_imdb': ratings_imdb
+    })
+
+    # Filmes favoritos do usuário e suas notas
+    user_favorites = {
+        '1': 'Filme 10', # Gosta muito
+        '2': 'Filme 11', # Gosta muito
+        '3': 'Filme 500' # Gosta, mas é bem diferente dos outros
+    }
+    
+    user_ratings = {
+        'Filme 10': 5.0,
+        'Filme 11': 4.5,
+        'Filme 500': 3.0
+    }
+
+    print("--- Recomendações com Perfil Ponderado e MMR (lambda=0.7) ---")
+    recommendations = recommend_movies_advanced(
+        fav_matches=user_favorites,
+        imdb_df=sample_imdb_df,
+        embeddings=sample_embeddings,
+        ratings=user_ratings,
+        top_n=10,
+        lambda_=0.7
+    )
+    print(recommendations)
+    
+    print("\n--- Recomendações Focadas em Relevância (lambda=0.95) ---")
+    recommendations_relevance = recommend_movies_advanced(
+        fav_matches=user_favorites,
+        imdb_df=sample_imdb_df,
+        embeddings=sample_embeddings,
+        ratings=user_ratings,
+        top_n=10,
+        lambda_=0.95 # Valor alto para priorizar relevância
+    )
+    print(recommendations_relevance)
+
+    print("\n--- Recomendações Focadas em Diversidade (lambda=0.2) ---")
+    recommendations_diversity = recommend_movies_advanced(
+        fav_matches=user_favorites,
+        imdb_df=sample_imdb_df,
+        embeddings=sample_embeddings,
+        ratings=user_ratings,
+        top_n=10,
+        lambda_=0.2 # Valor baixo para priorizar diversidade
+    )
+    print(recommendations_diversity)
