@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recomendador de Filmes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="sombreado text-big">Top Four You</h1>
+            <p class="text1">Digite seu nickname do Letterboxd para receber recomendações personalizadas!</p>
+        </header>
+
+        <main>
+            <div class="input-group">
+                <input type="text" id="nickname-input" placeholder="Ex: dudis1990...">
+                <button id="recommend-btn" class="button">Buscar Recomendações</button>
+            </div>
+
+            <div id="loading-spinner" class="hidden">Carregando...</div>
+            <p id="error-message" class="error-text"></p>
+            <div id="results-container"></div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
