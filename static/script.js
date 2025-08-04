@@ -23,16 +23,20 @@ document.addEventListener("DOMContentLoaded", () => {
             spinner.classList.add("hidden");
 
             if (response.ok) {
-                results.innerHTML = data.map(filme => `
-                    <div>
-                        <strong>${filme.title}</strong><br>
-                        Gênero: ${filme.genre}<br>
-                        Idioma: ${filme.language}<br>
-                        Nota IMDb: ${filme.rating_imdb}
-                        <hr>
-                    </div>
-                `).join("");
-            } 
+                results.innerHTML = data.map(item => {
+                    return `
+                        <div class="recommendation-item">
+                            <strong class="item-title">${item.title}</strong><br>
+                            <span class="item-detail"><strong>Tipo:</strong> ${item.type}</span><br>
+                            <span class="item-detail"><strong>Gênero:</strong> ${item.genre}</span><br>
+                            <span class="item-detail"><strong>Data de Lançamento:</strong> ${item.release_date}</span><br>
+                            <span class="item-detail"><strong>Diretor:</strong> ${item.director}</span>
+                            <hr>
+                        </div>
+                    `;
+                }).join("");
+            }
+
             else {
                 errorMessage.textContent = data.error || "Erro ao buscar recomendações.";
             }

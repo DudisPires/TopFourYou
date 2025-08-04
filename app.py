@@ -12,8 +12,8 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 try:
     from src.scraping.letterboxd_scraper import get_favorite_movies
     from src.matching.fuzzy_matcher import match_titles
-    from src.embedding.embedding_generator import generate_description_nova_base, embed_descriptions
-    from src.recommender.recommender import recommend_movies_advanced
+    from src.embedding.embedding_generator import generate_description_netflix, embed_descriptions
+    from src.recommender.recommender import recommend_items_advanced
 except ImportError as e:
     print(f"ERRO DE IMPORTAÇÃO: {e}")
     sys.exit()
@@ -23,7 +23,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Caminhos dos dados
-DATASET_PATH = './data/pre-processing/base_transformada.csv'
+DATASET_PATH = './data/pre-processing/nova-NETFLIX.csv'
 EMBEDDINGS_PATH = './data/embeddings/movie_embeddings.npy'
 
 # Carregamento dos dados
@@ -34,7 +34,9 @@ embeddings = None
 try:
     print(f"Carregando dataset de '{DATASET_PATH}'...")
     imdb_df = pd.read_csv(DATASET_PATH)
-    imdb_df.dropna(subset=['title', 'release_date', 'rating_imdb', 'genre', 'language'], inplace=True)
+    imdb_df.dropna(subset=['title', 'release_date', 'type', 'genre', 'director'], inplace=True)
+    imdb_df.reset_index(drop=True, inplace=True)
+
     print("Dataset carregado com sucesso.")
 
     if os.path.exists(EMBEDDINGS_PATH):
@@ -43,7 +45,7 @@ try:
     else:
         print("Embeddings não encontrados. Gerando novos...")
         os.makedirs(os.path.dirname(EMBEDDINGS_PATH), exist_ok=True)
-        descriptions = generate_description_nova_base(imdb_df)
+        descriptions = generate_description_netflix(imdb_df)
         embeddings = embed_descriptions(descriptions)
         np.save(EMBEDDINGS_PATH, embeddings)
     print("Servidor pronto.")
@@ -71,7 +73,14 @@ def recommend():
 
     if imdb_df is None or embeddings is None:
         return jsonify({"error": "Erro interno: dataset ou embeddings não carregados."}), 500
+    
+    print(f"Linhas no DataFrame (imdb_df): {imdb_df.shape[0]}")
+    print(f"Linhas nos Embeddings: {embeddings.shape[0]}")
 
+    if imdb_df.shape[0] != embeddings.shape[0]:
+        print("ALERTA: O número de linhas do DataFrame e dos Embeddings é DIFERENTE!")
+        return jsonify({"error": "Erro de sincronização de dados interno."}), 500
+    
     try:
         favorite_titles = get_favorite_movies(nickname)
         if not favorite_titles:
@@ -82,9 +91,9 @@ def recommend():
         if not matched_titles:
             return jsonify({"error": "Nenhum filme favorito foi encontrado no nosso banco de dados."}), 404
 
-        recommendations = recommend_movies_advanced(
+        recommendations = recommend_items_advanced(
             fav_matches=matched_titles,
-            imdb_df=imdb_df,
+            items_df=imdb_df,
             embeddings=embeddings
         )
         return recommendations.to_json(orient="records")
