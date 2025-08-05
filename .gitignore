@@ -119,7 +119,7 @@ ipython_config.py
 
 data/embeddings/movie_embeddings.npy
 data/TMDB_movie_dataset_v11.csv
-
+data/world_imdb_movies_preprocessed.csv
 
 # pixi
 #   Similar to Pipfile.lock, it is generally recommended to include pixi.lock in version control.
