@@ -95,19 +95,18 @@ source venv/bin/activate
 
 requirements.txt ou manualmente:
 
-flask
-flask-cors
-pandas
-numpy
-selenium
-beautifulsoup4
-rapidfuzz
-scikit-learn
-faiss-cpu
-sentence-transformers
-tqdm
-gunicorn
-Bash
+- flask
+- flask-cors
+- pandas
+- numpy
+- selenium
+- beautifulsoup4
+- rapidfuzz
+- scikit-learn
+- faiss-cpu
+- sentence-transformers
+- tqdm
+- gunicorn
 
 ```
 pip install -r requirements.txt
