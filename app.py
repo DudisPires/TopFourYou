@@ -5,10 +5,8 @@ import sys
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 
-# Adiciona o diretório raiz do projeto ao path para importar os módulos do src
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 
-# Importações dos módulos internos
 try:
     from src.scraping.letterboxd_scraper import get_favorite_movies
     from src.matching.fuzzy_matcher import match_titles
@@ -18,15 +16,12 @@ except ImportError as e:
     print(f"ERRO DE IMPORTAÇÃO: {e}")
     sys.exit()
 
-# Inicialização do Flask
 app = Flask(__name__)
 CORS(app)
 
-# Caminhos dos dados
 DATASET_PATH = './data/pre-processing/base_transformada.csv'
 EMBEDDINGS_PATH = './data/embeddings/movie_embeddings.npy'
 
-# Carregamento dos dados
 print("Iniciando o servidor e carregando os recursos...")
 imdb_df = None
 embeddings = None
@@ -50,19 +45,15 @@ try:
 except Exception as e:
     print(f"Erro durante a inicialização: {e}")
 
-# --- Rotas ---
 
-# Rota raiz agora redireciona direto para a interface
 @app.route('/')
 def index():
     return render_template('index.html')
 
-# (Opcional) rota /app ainda pode funcionar
 @app.route('/app')
 def frontend():
     return render_template('index.html')
 
-# Rota da recomendação
 @app.route('/recommend', methods=['GET'])
 def recommend():
     nickname = request.args.get('nickname')
