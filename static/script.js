@@ -4,8 +4,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const results = document.getElementById("results-container");
     const errorMessage = document.getElementById("error-message");
     const spinner = document.getElementById("loading-spinner");
+    spinner.classList.add("hidden");
 
     button.addEventListener("click", async () => {
+        spinner.classList.add("hidden");
         const nickname = input.value.trim();
         if (!nickname) {
             errorMessage.textContent = "Por favor, digite um nickname.";
@@ -24,11 +26,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (response.ok) {
                 results.innerHTML = data.map(filme => `
-                    <div>
-                        <strong>${filme.title}</strong><br>
-                        Gênero: ${filme.genre}<br>
-                        Idioma: ${filme.language}<br>
-                        Nota IMDb: ${filme.rating_imdb}
+                    <div class="filme">
+                        <strong class="titulo">${filme.title}</strong><br>
+                        <span class="genero">Gênero: ${filme.genre}</span><br>
+                        <span class="idioma">Idioma: ${filme.language}</span><br>
+                        <span class="nota">Nota IMDb: ${filme.rating_imdb}</span>
                         <hr>
                     </div>
                 `).join("");

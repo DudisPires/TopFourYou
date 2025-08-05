@@ -4,11 +4,95 @@ html {
 }
 
 body {
-    font-family: Arial, sans-serif;
-    min-height: 100vh; 
-    background: linear-gradient(45deg, #d75737, #6ddf57, #2fa5c2);
-    padding: 0;
+  margin: 0;
+  background-color: rgb(3, 9, 74); /* Um fundo escuro sólido para melhor contraste */
+  color: #fff; /* Garante que o texto padrão seja legível */
+  font-family: Arial, sans-serif;
+  /* A rolagem agora funcionará normalmente */
 }
+
+/* O contêiner do nosso fundo animado */
+.background-container {
+  position: fixed; /* Fica fixo na tela e não rola com o conteúdo */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1; /* Garante que ele fique atrás de todo o conteúdo */
+  overflow: hidden; /* Esconde as partes das ondas que saem da tela */
+}
+
+/* Estilos das "bolhas" de lava */
+.background-container::before,
+.background-container::after {
+  content: "";
+  position: absolute;
+  width: 800px; /* Tamanho das bolhas */
+  height: 800px;
+  background-image: radial-gradient(circle, #da7b0f 30%, #d67c06 70%);
+  border-radius: 50%; /* Começam como círculos perfeitos */
+  
+  /* A mágica do efeito "gooey" (pegajoso/líquido) */
+  filter: blur(80px); 
+
+  opacity: 0.7;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+/* Primeira bolha */
+.background-container::before {
+  top: 2vh;
+  left: 2vw;
+  animation-name: moveAndMorph1;
+  animation-duration: 30s;
+}
+
+/* Segunda bolha */
+.background-container::after {
+  bottom: 2vh;
+  right: 2vw;
+  background-image: radial-gradient(circle, #4fee06 30%, #031a77 70%);
+  animation-name: moveAndMorph2;
+  animation-duration: 30s;
+}
+
+
+/* Animação que move E deforma as bolhas */
+@keyframes moveAndMorph1 {
+  0%, 100% {
+    transform: translate(0, 0);
+    border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+  }
+  25% {
+    transform: translate(30vw, 20vh) scale(0.8);
+  }
+  50% {
+    transform: translate(15vw, 40vh);
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  }
+  75% {
+    transform: translate(-20vw, 10vh) scale(1.1);
+  }
+}
+
+@keyframes moveAndMorph2 {
+  0%, 100% {
+    transform: translate(0, 0);
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  }
+  25% {
+    transform: translate(-25vw, -15vh) scale(0.9);
+  }
+  50% {
+    transform: translate(-10vw, -30vh);
+    border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+  }
+  75% {
+    transform: translate(20vw, -10vh) scale(1.2);
+  }
+}
+
 
 h1 {
     text-align: center;
@@ -18,11 +102,11 @@ h1 {
 .container {
     max-width: 900px;
     margin: 2rem auto;
-    background: linear-gradient(45deg, #0de509, #336699); 
+    background: linear-gradient(90deg, #ff8104, #299409, #290785); 
     padding: 20px;
     border-radius: 10px; 
     color: aliceblue;
-    box-shadow: 0 2px 10px rgba(39, 19, 129, 0.797);
+    box-shadow: 0 2px 10px rgba(18, 18, 18, 0.797);
 }
 
 header h1 {
@@ -33,25 +117,35 @@ header h1 {
     display: flex;
     gap: 10px;
     margin: 1rem 0;
+    align-items: center;
 }
 
 input[type="text"] {
     flex: 1;
-    padding: 0.5rem;
+    min-width: 200px;  /* largura mínima */
+    max-width: 550px;  /* largura máxima */
+    padding: 0.45rem;
+    margin: 0.5rem auto;
     font-size: 1.2rem;
-    border-color:  #ffcc00;
-    border-width: 0.4rem;
-    background-color: #ffffffc0;
+    border-color:  #071277b0;
+    border-width: 0.25rem;
+    background-color: #ffffffca;
 }
 
 button {
     padding: 0.5rem 1rem;
     font-size: 1rem;
     cursor: pointer;
-    background: linear-gradient(to right, #ff7e5f, #feb47b);
+    background: linear-gradient(to right, #bf410b, #0918a1);
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
+    width: 230px;
+    height: 45px;
+
+    display: block; /* para margin funcionar */
+    margin-left: 0;
+    margin-right: auto;
 }
 
 button:hover{
@@ -64,7 +158,26 @@ button:hover{
 #results-container {
     margin-top: 2rem;
     color: #dedad9;
+    font-size: 1.4em;
 }
+
+.filme .titulo {
+  font-size: 25px;
+  text-shadow: 4px 3px 5px #0d9ac1d8; 
+}
+
+.filme .genero {
+  font-size: 18px;
+}
+
+.filme .idioma {
+  font-size: 18px;
+}
+
+.filme .nota {
+  font-size: 16px;
+}
+
 
 .error-text {
     color: rgb(41, 11, 131);
@@ -76,18 +189,13 @@ button:hover{
     display: none;
 }
 
-.sombreado {
-    font-size: 2em; 
-    text-shadow: 2px 2px 4px #3e5db3; 
-}
-
 .text1 {
     margin-top: 40px;
     margin-bottom: 40px;
     font-family: Times 'Times New Roman', Times, serif, sans-serif;
-    font-size: 1.5em;
+    font-size: 1.4em;
     text-align: center;
-    text-shadow: 2px 2px 4px #3e5db3; 
+    text-shadow: 4px 3px 5px #181717; 
 }
 
 .text-big{
@@ -96,5 +204,79 @@ button:hover{
     font-family: Times 'Times New Roman', Times, serif, sans-serif;
     font-size: 3.8em;
     text-align: center;
-    text-shadow: 2px 2px 4px #3e5db3; 
+    text-shadow: 2px 2px 4px #ff0707; 
+}
+
+.titulo-com-fundo {
+    position: relative;
+    display: flex;
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center;     /* Centraliza verticalmente */
+    margin-top: 40px;
+    text-align: center;
+}
+
+.titulo-com-fundo .retangulo {
+    position: absolute;
+    width: 70%;
+    height: 100%;
+    background-color: #9e1b3c3d;
+    border-radius: 15px;
+    z-index: 0;
+    box-shadow: 0 0 15px rgba(3, 244, 244, 0.754);
+}
+
+.retangulo .img-fundo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.7; /* valor opcional para deixar o texto mais visível */
+    border-radius: 15px;
+}
+
+.titulo-com-fundo h1 {
+    position: relative;
+    z-index: 1;
+    padding: 20px;
+}
+
+
+.centered {
+  text-align: center;
+}
+
+
+#loading-spinner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.2rem;
+  color: white;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 12px 20px;
+  border-radius: 8px;
+  width: fit-content;
+  margin: 20px auto;
+  box-shadow: 0 0 15px rgba(3, 244, 244, 0.754);
+}
+
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 4px solid #ffffff;
+  border-top-color: rgb(4, 4, 4);
+  border-radius: 50%;
+  animation: spin 3s linear infinite;
+}
+
+/* animação de giro */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* classe para esconder */
+.hidden {
+  display: none !important ;
 }
