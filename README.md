@@ -62,7 +62,7 @@ Isso evita que o sistema recomende 10 filmes do mesmo diretor ou subgênero, res
 
 ## 🚀 Instalação e Execução
 
-![Letterboxd3](static/img/Captura de tela de 2025-08-05 16-41-39.png)
+ ![Letterboxd3](static/img/Captura de tela de 2025-08-05 16-41-39.png)
 
 
 Para rodar este projeto localmente, siga os passos abaixo.
