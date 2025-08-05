@@ -1,9 +1,5 @@
 
-static/img/Letterboxd-Contest-Featured-1460x800-1.jpg
 ![Letterboxd2](static/img/Letterboxd-Contest-Featured-1460x800-1.jpg)
-
-![Letterboxd](static/img/image.png)
-
 
 
 # TopFourYou
