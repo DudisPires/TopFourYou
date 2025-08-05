@@ -5,3 +5,9 @@ beautifulsoup4
 sentence-transformers
 scikit-learn
 rapidfuzz
+flask
+flask-cors
+selenium
+faiss-cpu
+tqdm
+gunicorn
