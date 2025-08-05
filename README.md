@@ -1,5 +1,5 @@
 
-![Letterboxd2](static/img/Letterboxd-Contest-Featured-1460x800-1.jpg)
+![Letterboxd2](static/img/image3.png)
 
 # 🎥 TopFourYou ( Projeto em andamento)
 
