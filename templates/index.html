@@ -7,19 +7,31 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    <div class="background-container"></div>
     <div class="container">
         <header>
-            <h1 class="sombreado text-big">Top Four You</h1>
-            <p class="text1">Digite seu nickname do Letterboxd para receber recomendações personalizadas!</p>
+            <div class="titulo-com-fundo">
+                <div class="retangulo">
+                    <img src="/static/img/image.png" alt="Imagem de fundo" class="img-fundo">
+                </div>
+                        
+                <h1 class="sombreado text-big">Top Four You</h1>
+            </div>
+
+
+            <p class="text1">Digite seu nickname do Letterboxd para receber recomendações!</p>
         </header>
 
         <main>
             <div class="input-group">
-                <input type="text" id="nickname-input" placeholder="Ex: dudis1990...">
+                <input type="text" id="nickname-input" placeholder="Nickname">
                 <button id="recommend-btn" class="button">Buscar Recomendações</button>
             </div>
 
-            <div id="loading-spinner" class="hidden">Carregando...</div>
+            <div id="loading-spinner" class="hidden">
+                <div class="spinner"></div>
+                Gerando Recomendações...
+            </div>            
             <p id="error-message" class="error-text"></p>
             <div id="results-container"></div>
         </main>
