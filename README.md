@@ -137,5 +137,3 @@ python app.py
 [ ] Permitir que o usuário ajuste o parâmetro de "diversidade vs. relevância" (lambda do MMR) diretamente na interface.
 
 [ ] Adicionar um sistema de cache para nicknames já pesquisados, a fim de acelerar futuras buscas.
-
-[ ] "Dockerizar" a aplicação para simplificar o deploy e a configuração do ambiente.
