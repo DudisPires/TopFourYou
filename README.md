@@ -1,22 +1,7 @@
 
 ![Letterboxd2](static/img/Letterboxd-Contest-Featured-1460x800-1.jpg)
 
-
-# TopFourYou
-TopFourYou is a movie recommendation system that uses a user's four favorite films on Letterboxd as a foundation to understand their cinematic taste. By analyzing themes, genres, directors, and emotional tone, the system intelligently suggests new films that align with the user’s unique movie identity.
-
-
-Fucncionalidades futuras:
-
-- Poder escolher o servico de streaming que recomenda
-- Exibir o poster dos filmes recomendados
-
-## 
-
-
-
-
-# TopFourYou
+# 🎥 TopFourYou
 
   TopFourYou é um sistema de recomendação de filmes que utiliza os quatro filmes favoritos de um usuário no Letterboxd como base para entender seu gosto cinematográfico. Através da análise de embeddings semânticos gerados a partir de metadados dos filmes e um algoritmo avançado de ranqueamento (MMR), o sistema sugere de forma inteligente novos filmes que se alinham com a identidade cinematográfica única do usuário, balanceando relevância e diversidade.
 
