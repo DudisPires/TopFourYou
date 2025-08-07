@@ -326,9 +326,9 @@ button:hover{
 }
 
 .centered-link {
-    display: block; /* Transforma o link em um bloco */
-    width: fit-content; /* Define a largura para o tamanho do conteúdo */
-    margin: 1rem auto 0; /* Centraliza horizontalmente e adiciona margem superior */
+    display: block; 
+    width: fit-content;
+    margin: 1rem auto 0; 
     text-align: center;
     text-decoration: none;
     font-size: 1.1em;
@@ -340,14 +340,13 @@ button:hover{
 }
 
 .centered-link a {
-    color: #dedad9; /* Cor que combina com o texto dos resultados */
-    font-size: 1em;
+    color: #dedad9; 
     text-align: center;
 
 }
 
 .centered-link a:hover {
-    text-decoration: underline; /* Adiciona sublinhado ao passar o mouse para feedback */
+    text-decoration: underline; 
     color: #041dffd4;
 }
 
@@ -398,8 +397,8 @@ button:hover{
 }
 
 .linha-estilizada {
-  border-bottom: 2px solid #00b8c597; /* Cria uma borda na parte inferior */
-  width: 100%; /* Ocupa a largura total */
+  border-bottom: 2px solid #00b8c597; 
+  width: 100%; 
   margin: 30px 0; 
 }
 
