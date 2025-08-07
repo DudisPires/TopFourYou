@@ -108,7 +108,6 @@ def save_watchlists_to_json(nickname1, nickname2, output_file="data/watchlist/wa
         nickname2: watchlist2
     }
 
-    # Garante que o diretório existe
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
 
     with open(output_file, "w", encoding="utf-8") as f:
@@ -120,7 +119,6 @@ def find_common_movies(json_path):
     with open(json_path, "r", encoding="utf-8") as f:
         data = json.load(f)
 
-    # Extrai as duas listas
     users = list(data.keys())
     if len(users) < 2:
         print("O JSON deve conter dois usuários.")
@@ -137,9 +135,6 @@ def find_common_movies(json_path):
     return comuns
 
 def get_user_avatar(nickname):
-    """
-    Realiza o scraping da página de perfil de um usuário para encontrar a URL do seu avatar.
-    """
     url = f"https://letterboxd.com/{nickname}/"
     options = Options()
     options.headless = True
@@ -152,23 +147,18 @@ def get_user_avatar(nickname):
 
         soup = BeautifulSoup(html, "html.parser")
         
-        # Baseado na sua imagem, o seletor busca pela tag <img> dentro da div com a classe 'profile-avatar'
         avatar_div = soup.find("div", class_="profile-avatar")
         if avatar_div:
             img_tag = avatar_div.find("img")
             if img_tag and img_tag.has_attr("src"):
-                return img_tag["src"] # Retorna a URL da imagem
+                return img_tag["src"] 
 
     except Exception as e:
         print(f"Erro ao buscar o avatar de {nickname}: {e}")
     
-    return None # Retorna None se não encontrar
-
+    return None 
 def get_movie_poster_by_slug(slug):
-    """
-    Recebe o slug do filme e retorna a URL do pôster.
-    Ex: slug = 'call-me-by-your-name'
-    """
+    
     movie_url = f"https://letterboxd.com/film/{slug}/"
     options = Options()
     options.headless = True
@@ -182,7 +172,6 @@ def get_movie_poster_by_slug(slug):
 
         soup = BeautifulSoup(driver.page_source, "html.parser")
 
-        # Busca o pôster dentro da div da classe "film-poster"
         poster_div = soup.find("div", class_="film-poster")
         if poster_div:
             img_tag = poster_div.find("img")
@@ -198,7 +187,6 @@ def get_movie_poster_by_slug(slug):
 
     return None
 
-# Execução
 if __name__ == "__main__":
     nickname1 = 'trevorrussi'
     nickname2 = 'dudis1990'  
