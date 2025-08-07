@@ -191,6 +191,15 @@ button:hover{
     text-shadow: 4px 3px 5px #181717; 
 }
 
+.text2 {
+    margin-top: 40px;
+    margin-bottom: 10px;
+    font-family: Times 'Times New Roman', Times, serif, sans-serif;
+    font-size: 1.5em;
+    text-align: center;
+    text-shadow: 4px 3px 5px #181717; 
+}
+
 .text-big{
     
     margin-top: 10px;
@@ -271,3 +280,127 @@ button:hover{
 .hidden {
   display: none !important ;
 }
+
+.avatar-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.avatar-img {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+#find-common-btn{
+  padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    background: linear-gradient(to right, #bf410b, #0918a1);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    width: 350px;
+    height: 45px;
+    display: block;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#find-common-btn:hover{
+  background: linear-gradient(to right, #0b217a, #9efe7b); 
+  color: white;
+  cursor: pointer;
+}
+
+.text-watchlist{
+    margin-top: 40px;
+    margin-bottom: 40px;
+    font-family: Times 'Times New Roman', Times, serif, sans-serif;
+    font-size: 1.3em;
+    text-align: center;
+    text-shadow: 4px 3px 5px #181717; 
+}
+
+.centered-link {
+    display: block; /* Transforma o link em um bloco */
+    width: fit-content; /* Define a largura para o tamanho do conteúdo */
+    margin: 1rem auto 0; /* Centraliza horizontalmente e adiciona margem superior */
+    text-align: center;
+    text-decoration: none;
+    font-size: 1.1em;
+    color: #ffffff;
+}
+
+.centered-link:hover {
+    text-decoration: underline; 
+}
+
+.centered-link a {
+    color: #dedad9; /* Cor que combina com o texto dos resultados */
+    font-size: 1em;
+    text-align: center;
+
+}
+
+.centered-link a:hover {
+    text-decoration: underline; /* Adiciona sublinhado ao passar o mouse para feedback */
+    color: #041dffd4;
+}
+
+#nickname1-input{
+  flex: 1;
+    min-width: 200px;  
+    max-width: 350px;  
+    padding: 0.45rem;
+    margin: 0.5rem auto;
+    font-size: 1.2rem;
+    border-color:  #071277b0;
+    border-width: 0.25rem;
+    background-color: #ffffffca;
+}
+
+#nickname2-input{
+  flex: 1;
+    min-width: 200px;  
+    max-width:  350px;  
+    padding: 0.45rem;
+    margin: 0.5rem auto;
+    font-size: 1.2rem;
+    border-color:  #071277b0;
+    border-width: 0.25rem;
+    background-color: #ffffffca;
+}
+
+#button-watchlist{
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    background: linear-gradient(to right, #bf410b, #0918a1);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    width: 230px;
+    height: 45px;
+
+    display: block; 
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#button-watchlist:hover{
+  background: linear-gradient(to right, #0b217a, #9efe7b); 
+  color: white;
+  cursor: pointer;
+}
+
+.linha-estilizada {
+  border-bottom: 2px solid #00b8c597; /* Cria uma borda na parte inferior */
+  width: 100%; /* Ocupa a largura total */
+  margin: 30px 0; 
+}
+
+

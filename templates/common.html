@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filmes em Comum</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="background-container"></div>
+    <div class="container">
+        <header>
+            <div class="titulo-com-fundo">
+                <div class="retangulo">
+                    <img src="/static/img/image.png" alt="Imagem de fundo" class="img-fundo">
+                </div>
+                <h1 class="sombreado text-big">Common Watchlist</h1>
+            </div>
+            <p class="text-watchlist">Digite dois nicknames para ver os filmes em comum na watchlist!</p>
+        </header>
+
+        <main>
+            <div class="input-group">
+                <input type="text" id="nickname1-input" placeholder="Nickname 1">
+                <input type="text" id="nickname2-input" placeholder="Nickname 2">
+            </div>
+            <button id="find-common-btn" class="button">Encontrar Filmes em Comum</button>
+            
+            <div id="loading-spinner" class="hidden">
+                <div class="spinner"></div>
+                Buscando filmes em comum...
+            </div>
+            <p id="error-message" class="error-text"></p>
+            <div id="results-container">
+                </div>
+            <div class="centered-link a" style="margin-top: 2rem;">
+                <a href="/" class="centered-link a">Voltar para o recomendador</a>
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='common.js') }}"></script>
+</body>
+</html>
