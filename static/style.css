@@ -130,6 +130,7 @@ button {
     font-size: 1rem;
     cursor: pointer;
     background: linear-gradient(to right, #bf410b, #0918a1);
+    box-shadow: 0 2px 15px rgba(34, 215, 37, 0.797);
     color: white;
     border: none;
     border-radius: 6px;
@@ -196,9 +197,20 @@ button:hover{
     margin-bottom: 10px;
     font-family: Times 'Times New Roman', Times, serif, sans-serif;
     font-size: 1.5em;
+    text-align: left;
+    text-shadow: 4px 3px 5px #181717; 
+}
+
+
+.text3 {
+    margin-top: 15px;
+    margin-bottom: 10px;
+    font-family: Times 'Times New Roman', Times, serif, sans-serif;
+    font-size: 1.4em;
     text-align: center;
     text-shadow: 4px 3px 5px #181717; 
 }
+
 
 .text-big{
     
@@ -331,7 +343,7 @@ button:hover{
     margin: 1rem auto 0; 
     text-align: center;
     text-decoration: none;
-    font-size: 1.1em;
+    font-size: 1em;
     color: #ffffff;
 }
 
@@ -347,7 +359,7 @@ button:hover{
 
 .centered-link a:hover {
     text-decoration: underline; 
-    color: #041dffd4;
+    color: #b3b3b3;
 }
 
 #nickname1-input{
@@ -384,6 +396,7 @@ button:hover{
     border-radius: 6px;
     width: 230px;
     height: 45px;
+    box-shadow: 0 2px 15px rgba(34, 215, 37, 0.797);
 
     display: block; 
     margin-left: auto;
@@ -397,9 +410,78 @@ button:hover{
 }
 
 .linha-estilizada {
-  border-bottom: 2px solid #00b8c597; 
-  width: 100%; 
+  border-bottom: 2px solid #e4e4e4b4; 
+  width: 100%;
+  border-radius: 10px;
   margin: 30px 0; 
 }
 
+.button-85 {
+  padding: 0.6em 2em;
+  border: none;
+  outline: none;
+  color: rgb(255, 255, 255);
+  background: #111;
+  cursor: pointer;
+  position: relative;
+  z-index: 0;
+  border-radius: 10px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  display: block; 
+    margin-left: auto;
+    margin-right: auto;
+}
 
+.button-85:before {
+  content: "";
+  background: linear-gradient(
+    45deg,
+    #ff0000,
+    #ff7300,
+    #fffb00,
+    #48ff00,
+    #00ffd5,
+    #002bff,
+    #7a00ff,
+    #ff00c8,
+    #ff0000
+  );
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  background-size: 400%;
+  z-index: -1;
+  filter: blur(5px);
+  -webkit-filter: blur(5px);
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  animation: glowing-button-85 20s linear infinite;
+  transition: opacity 0.3s ease-in-out;
+  border-radius: 10px;
+}
+
+@keyframes glowing-button-85 {
+  0% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 400% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
+.button-85:after {
+  z-index: -1;
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, #4fee0697 30%, #031a77 50%);
+  left: 0;
+  top: 0;
+  border-radius: 10px;
+}

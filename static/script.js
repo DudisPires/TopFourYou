@@ -30,7 +30,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     avatarImg.src = data.avatar_url;
                     avatarImg.alt = `Avatar de ${nickname}`;
                     avatarImg.className = "avatar-img";
-                    avatarContainer.appendChild(avatarImg); 
+                    avatarContainer.appendChild(avatarImg);
+                    
+                    const nicknameText = document.createElement("p"); // Cria um parágrafo
+                    nicknameText.textContent = nickname; // Define o texto do parágrafo
+                    nicknameText.className = "text3"; // (Opcional) Adiciona uma classe para estilização
+                    avatarContainer.appendChild(nicknameText); // Anexa o parágrafo ao container
                 }
 
                 const filmes = data.recommendations;
