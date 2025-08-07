@@ -1,7 +1,7 @@
 
-![Letterboxd2](static/img/Letterboxd-Contest-Featured-1460x800-1.jpg)
+![Letterboxd2](static/img/image3.png)
 
-# 🎥 TopFourYou
+# 🎥 TopFourYou ( Projeto em andamento)
 
   TopFourYou é um sistema de recomendação de filmes que utiliza os quatro filmes favoritos de um usuário no Letterboxd como base para entender seu gosto cinematográfico. Através da análise de embeddings semânticos gerados a partir de metadados dos filmes e um algoritmo avançado de ranqueamento (MMR), o sistema sugere de forma inteligente novos filmes que se alinham com a identidade cinematográfica única do usuário, balanceando relevância e diversidade.
 
@@ -61,6 +61,9 @@ Isso evita que o sistema recomende 10 filmes do mesmo diretor ou subgênero, res
     RapidFuzz: Para correspondência de strings.
 
 ## 🚀 Instalação e Execução
+
+ ![Letterboxd](static/img/image2.png)
+
 
 Para rodar este projeto localmente, siga os passos abaixo.
 
@@ -134,5 +137,3 @@ python app.py
 [ ] Permitir que o usuário ajuste o parâmetro de "diversidade vs. relevância" (lambda do MMR) diretamente na interface.
 
 [ ] Adicionar um sistema de cache para nicknames já pesquisados, a fim de acelerar futuras buscas.
-
-[ ] "Dockerizar" a aplicação para simplificar o deploy e a configuração do ambiente.
