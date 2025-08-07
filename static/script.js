@@ -1,13 +1,11 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Seleciona todos os elementos da interface
     const input = document.getElementById("nickname-input");
     const button = document.getElementById("recommend-btn");
     const resultsContainer = document.getElementById("results-container");
-    const avatarContainer = document.getElementById("avatar-container"); // Contêiner dedicado para o avatar
+    const avatarContainer = document.getElementById("avatar-container"); 
     const errorMessage = document.getElementById("error-message");
     const spinner = document.getElementById("loading-spinner");
 
-    // Adiciona o evento de clique ao botão
     button.addEventListener("click", async () => {
         const nickname = input.value.trim();
         if (!nickname) {
@@ -15,30 +13,26 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // Limpa a interface antes de uma nova busca
         errorMessage.textContent = "";
         resultsContainer.innerHTML = "";
-        avatarContainer.innerHTML = ""; // Limpa também o avatar anterior
-        spinner.classList.remove("hidden"); // Mostra o spinner
+        avatarContainer.innerHTML = ""; 
+        spinner.classList.remove("hidden"); 
 
         try {
-            // Faz a requisição para o backend
             const response = await fetch(`/recommend?nickname=${nickname}`);
             const data = await response.json();
 
-            spinner.classList.add("hidden"); // Esconde o spinner
+            spinner.classList.add("hidden"); 
 
             if (response.ok) {
-                // 1. Processa e exibe o avatar, se existir
                 if (data.avatar_url) {
                     const avatarImg = document.createElement("img");
                     avatarImg.src = data.avatar_url;
                     avatarImg.alt = `Avatar de ${nickname}`;
                     avatarImg.className = "avatar-img";
-                    avatarContainer.appendChild(avatarImg); // Adiciona a imagem ao seu contêiner
+                    avatarContainer.appendChild(avatarImg); 
                 }
 
-                // 2. Processa e exibe as recomendações de filmes
                 const filmes = data.recommendations;
                 if (filmes && filmes.length > 0) {
                     resultsContainer.innerHTML = filmes.map(filme => `
@@ -54,11 +48,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     resultsContainer.innerHTML = "<p>Nenhuma recomendação encontrada.</p>";
                 }
             } else {
-                // Exibe a mensagem de erro vinda do servidor
                 errorMessage.textContent = data.error || "Erro ao buscar recomendações.";
             }
         } catch (err) {
-            // Exibe uma mensagem de erro genérica em caso de falha de conexão
             spinner.classList.add("hidden");
             errorMessage.textContent = "Erro de conexão com o servidor.";
             console.error("Fetch error:", err);
