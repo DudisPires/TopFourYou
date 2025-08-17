@@ -8,7 +8,7 @@
 ## ✨ Funcionalidades Principais   
  
 - Recomendações Personalizadas: Gera uma lista de filmes a partir de um simples nickname do Letterboxd.
-
+  
 - Web Scraping Dinâmico: Utiliza Selenium para buscar em tempo real os 4 filmes favoritos do perfil do usuário.
 
 - Correspondência Inteligente de Títulos: Emprega fuzzy matching (rapidfuzz) para encontrar correspondências precisas no banco de dados, mesmo com pequenas variações nos títulos.
